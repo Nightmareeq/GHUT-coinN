@@ -263,27 +263,19 @@ const btn = document.getElementById("tapBtn");
 
 btn.addEventListener("click", async () => {
 
-    try {
+    const res = await fetch(API + "/tap", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            user_id: USER_ID
+        })
+    });
 
-        const res = await fetch(API + "/tap", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                user_id: USER_ID
-            })
-        });
+    const data = await res.json();
 
-        const data = await res.json();
-
-        console.log(data);
-
-    } catch (err) {
-
-        console.error(err);
-
-    }
+    console.log(data);
 
 });
     // обновление UI
