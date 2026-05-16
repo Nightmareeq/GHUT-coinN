@@ -8,8 +8,6 @@ import os
 
 app = FastAPI()
 
-app.mount("/statics", StaticFiles(directory="static"), name="static")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,10 +16,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get("/")
-def home():
-    path = os.path.join("static", "index.html")
-    return FileResponse(path)
+def site():
+    return FileResponse(os.path.join("static", "index.html"))
 
 # --- БАЗА ---
 def init_db():
