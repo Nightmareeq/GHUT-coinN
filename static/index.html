@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>GHUT COIN</title>
+
+<style>
+:root {
+    --bg: #0d0b14;
+    --accent: #6d28d9;
+    --accent2: #4c1d95;
+    --text: #e5e7eb;
+    --sub: #9ca3af;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 🏆 Рейтинг */
+.rank-card {
+    position: absolute;
+    bottom: 80px;
+    width: 80%;
+    max-width: 300px;
+    padding: 14px;
+
+    background: rgba(26, 22, 37, 0.8);
+    border-radius: 16px;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255,255,255,0.05);
+
+    text-align: center;
+}
+
+.rank-title {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 6px;
+}
+
+.rank-value {
+    font-size: 26px;
+    font-weight: bold;
+
+    background: linear-gradient(90deg, #a78bfa, #6d28d9);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 🔥 ФОН */
+.bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.bg::before {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+
+    background-image: repeating-linear-gradient(
+        -30deg,
+        rgba(109, 40, 217, 0.15) 0px,
+        rgba(109, 40, 217, 0.15) 80px,
+        transparent 80px,
+        transparent 180px
+    );
+
+    animation: moveStripes 20s linear infinite;
+}
+
+.bg::after {
+    content: "GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   ";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+
+    transform: rotate(-30deg);
+    font-size: 34px;
+    letter-spacing: 18px;
+    font-weight: 600;
+
+    background: linear-gradient(90deg, #a78bfa, #6d28d9, #4c1d95);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    opacity: 0.08;
+
+    animation: moveText 30s linear infinite;
+}
+
+.bg-glow {
+    position: fixed;
+    width: 120vw;
+    height: 120vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(109,40,217,0.25), transparent 70%);
+    filter: blur(80px);
+    z-index: 0;
+}
+
+@keyframes moveStripes {
+    from {
+        transform: translateX(0) rotate(-30deg);
+    }
+    to {
+        transform: translateX(-200px) rotate(-30deg);
+    }
+}
+
+@keyframes moveText {
+    from {
+        transform: translateX(0) rotate(-30deg);
+    }
+    to {
+        transform: translateX(-50%) rotate(-30deg);
+    }
+}
+
+/* Верх */
+.top-bar {
+    position: fixed;
+    top: env(safe-area-inset-top, 10px);
+    left: 0;
+    width: 100%;
+    padding: 15px 18px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.players {
+    color: var(--sub);
+    font-size: 14px;
+}
+
+/* Центр */
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.tap-button {
+    width: 60vw;
+    height: 60vw;
+    max-width: 260px;
+    max-height: 260px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, var(--accent), var(--accent2));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 
+        0 10px 40px rgba(109, 40, 217, 0.5),
+        inset 0 0 20px rgba(255,255,255,0.1);
+    transition: transform 0.08s ease;
+}
+
+.tap-button:active {
+    transform: scale(0.92);
+}
+
+/* +1 эффект */
+.floating {
+    position: fixed; /* ВАЖНО */
+    color: #c4b5fd;
+    font-weight: bold;
+    font-size: 20px;
+    pointer-events: none;
+    animation: floatUp 0.8s ease forwards;
+    z-index: 9999; /* чтобы было поверх всего */
+}
+@keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-40px); }
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="bg-glow"></div>
+
+<div class="top-bar">
+    <div>GHUT COIN</div>
+    <div class="players">👤 <span id="players">0</span></div>
+</div>
+
+<div class="container">
+    <div class="tap-button" id="tapBtn">TAP</div>
+
+    <div class="rank-card">
+        <div class="rank-title">🏆 Рейтинг</div>
+        <div class="rank-value" id="rank">#0</div>
+    </div>
+</div>
+
+<script>
+
+const API = "http://127.0.0.1:8000";
+
+// уникальный пользователь (ОДИН раз)
+const USER_ID = localStorage.getItem("user_id") || crypto.randomUUID();
+localStorage.setItem("user_id", USER_ID);
+
+let score = 0;
+
+// регистрация
+fetch(API + "/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ user_id: USER_ID })
+});
+
+// загрузка данных при старте
+fetch(API + "/stats/" + USER_ID)
+.then(res => res.json())
+.then(data => {
+    document.getElementById("players").textContent = data.players;
+    document.getElementById("rank").textContent = "#" + data.rank;
+});
+
+const btn = document.getElementById("tapBtn");
+
+// ТАП (ОДИН обработчик!)
+btn.addEventListener("click", async (e) => {
+    score++;
+
+    // сервер
+    const res = await fetch(API + "/tap", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ user_id: USER_ID })
+    });
+
+    const data = await res.json();
+
+    // обновление UI
+    document.getElementById("players").textContent = data.players;
+    document.getElementById("rank").textContent = "#" + data.rank;
+
+    // вибрация
+    if (navigator.vibrate) navigator.vibrate(10);
+
+    // +1 эффект
+    const plus = document.createElement("div");
+    plus.className = "floating";
+    plus.textContent = "+1";
+
+    let x = e.clientX;
+    let y = e.clientY;
+
+    if (e.touches && e.touches.length > 0) {
+        x = e.touches[0].clientX;
+        y = e.touches[0].clientY;
+    }
+
+    plus.style.left = x + "px";
+    plus.style.top = y + "px";
+
+    document.body.appendChild(plus);
+    setTimeout(() => plus.remove(), 800);
+
+    console.log("Score:", data.score);
+});
+
+
+// 🔥 ПАРАЛЛАКС (оставляем как есть)
+document.addEventListener("touchmove", (e) => {
+    const x = e.touches[0].clientX / window.innerWidth - 0.5;
+    const y = e.touches[0].clientY / window.innerHeight - 0.5;
+
+    document.querySelector(".bg").style.transform =
+        `translate(${x * 20}px, ${y * 20}px)`;
+
+    const glow = document.querySelector(".bg-glow");
+    if (glow) {
+        glow.style.transform =
+            `translate(calc(-50% + ${x * 40}px), calc(-50% + ${y * 40}px))`;
+    }
+});
+
+</script>
+
+</body>
+</html>
