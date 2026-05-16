@@ -3,8 +3,12 @@ from pydantic import BaseModel
 import sqlite3
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+import os
 
 app = FastAPI()
+
+app.mount("/statics", StaticFiles(directory="statics"), name="statics")
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,7 +20,8 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return FileResponse("static/index.html")
+    path = os.path.join("statics", "index.html")
+    return FileResponse(path)
 
 # --- БАЗА ---
 def init_db():
