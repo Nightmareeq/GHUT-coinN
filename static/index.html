@@ -29,22 +29,16 @@ body {
     overflow: hidden;
 }
 
-/* 🏆 Рейтинг */
 .rank-card {
     position: absolute;
     bottom: 80px;
     width: 80%;
     max-width: 300px;
     padding: 14px;
-
     background: rgba(26, 22, 37, 0.8);
     border-radius: 16px;
-
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
     border: 1px solid rgba(255,255,255,0.05);
-
     text-align: center;
 }
 
@@ -57,13 +51,11 @@ body {
 .rank-value {
     font-size: 26px;
     font-weight: bold;
-
     background: linear-gradient(90deg, #a78bfa, #6d28d9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* 🔥 ФОН */
 .bg {
     position: fixed;
     inset: 0;
@@ -92,7 +84,7 @@ body {
 }
 
 .bg::after {
-    content: "GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   GHUT   ";
+    content: "GHUT GHUT GHUT GHUT GHUT GHUT";
     position: absolute;
     width: 200%;
     height: 200%;
@@ -143,7 +135,6 @@ body {
     }
 }
 
-/* Верх */
 .top-bar {
     position: fixed;
     top: env(safe-area-inset-top, 10px);
@@ -162,7 +153,6 @@ body {
     font-size: 14px;
 }
 
-/* Центр */
 .container {
     height: 100%;
     display: flex;
@@ -187,7 +177,7 @@ body {
     letter-spacing: 1px;
     cursor: pointer;
     user-select: none;
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(109, 40, 217, 0.5),
         inset 0 0 20px rgba(255,255,255,0.1);
     transition: transform 0.08s ease;
@@ -197,23 +187,26 @@ body {
     transform: scale(0.92);
 }
 
-/* +1 эффект */
 .floating {
-    position: fixed; /* ВАЖНО */
+    position: fixed;
     color: #c4b5fd;
     font-weight: bold;
     font-size: 20px;
     pointer-events: none;
     animation: floatUp 0.8s ease forwards;
-    z-index: 9999; /* чтобы было поверх всего */
+    z-index: 9999;
 }
+
 @keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-40px); }
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
 }
-
-
-
 </style>
 </head>
 
@@ -228,99 +221,110 @@ body {
 </div>
 
 <div class="container">
-    <div class="tap-button" id="tapBtn">TAP</div>
+
+    <div class="tap-button" id="tapBtn">
+        TAP
+    </div>
 
     <div class="rank-card">
         <div class="rank-title">🏆 Рейтинг</div>
         <div class="rank-value" id="rank">#0</div>
     </div>
+
 </div>
 
 <script>
 
-const API = "https://ghut-coinn-production.up.railway.app/";
+const API = "https://ghut-coinn-production.up.railway.app";
 
-// уникальный пользователь (ОДИН раз)
-const USER_ID = localStorage.getItem("user_id") || crypto.randomUUID();
+const USER_ID =
+    localStorage.getItem("user_id") || crypto.randomUUID();
+
 localStorage.setItem("user_id", USER_ID);
 
-let score = 0;
-
-});
-
-// загрузка данных при старте
 fetch(API + "/stats/" + USER_ID)
 .then(res => res.json())
 .then(data => {
-    document.getElementById("players").textContent = data.players;
-    document.getElementById("rank").textContent = "#" + data.rank;
+
+    document.getElementById("players").textContent =
+        data.players || 0;
+
+    document.getElementById("rank").textContent =
+        "#" + (data.rank || 0);
+
+})
+.catch(err => {
+    console.error(err);
 });
 
 const btn = document.getElementById("tapBtn");
 
-// ТАП (ОДИН обработчик!)
-const btn = document.getElementById("tapBtn");
+btn.addEventListener("click", async (e) => {
 
-btn.addEventListener("click", async () => {
+    try {
 
-    const res = await fetch(API + "/tap", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            user_id: USER_ID
-        })
-    });
+        const res = await fetch(API + "/tap", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: USER_ID
+            })
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    console.log(data);
+        console.log(data);
 
-});
-    // обновление UI
-    document.getElementById("players").textContent = data.players;
-    document.getElementById("rank").textContent = "#" + data.rank;
+        document.getElementById("players").textContent =
+            data.players || 0;
 
-    // вибрация
-    if (navigator.vibrate) navigator.vibrate(10);
+        document.getElementById("rank").textContent =
+            "#" + (data.rank || 0);
 
-    // +1 эффект
-    const plus = document.createElement("div");
-    plus.className = "floating";
-    plus.textContent = "+1";
+        if (navigator.vibrate) {
+            navigator.vibrate(10);
+        }
 
-    let x = e.clientX;
-    let y = e.clientY;
+        const plus = document.createElement("div");
 
-    if (e.touches && e.touches.length > 0) {
-        x = e.touches[0].clientX;
-        y = e.touches[0].clientY;
+        plus.className = "floating";
+        plus.textContent = "+1";
+
+        plus.style.left = e.clientX + "px";
+        plus.style.top = e.clientY + "px";
+
+        document.body.appendChild(plus);
+
+        setTimeout(() => {
+            plus.remove();
+        }, 800);
+
+    } catch(err) {
+
+        console.error(err);
+
     }
 
-    plus.style.left = x + "px";
-    plus.style.top = y + "px";
-
-    document.body.appendChild(plus);
-    setTimeout(() => plus.remove(), 800);
-
-    console.log("Score:", data.score);
 });
 
-
-// 🔥 ПАРАЛЛАКС (оставляем как есть)
 document.addEventListener("touchmove", (e) => {
-    const x = e.touches[0].clientX / window.innerWidth - 0.5;
-    const y = e.touches[0].clientY / window.innerHeight - 0.5;
+
+    const x =
+        e.touches[0].clientX / window.innerWidth - 0.5;
+
+    const y =
+        e.touches[0].clientY / window.innerHeight - 0.5;
 
     document.querySelector(".bg").style.transform =
         `translate(${x * 20}px, ${y * 20}px)`;
 
     const glow = document.querySelector(".bg-glow");
-    if (glow) {
-        glow.style.transform =
-            `translate(calc(-50% + ${x * 40}px), calc(-50% + ${y * 40}px))`;
-    }
+
+    glow.style.transform =
+        `translate(calc(-50% + ${x * 40}px), calc(-50% + ${y * 40}px))`;
+
 });
 
 </script>
