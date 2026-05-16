@@ -16,7 +16,7 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    return FileResponse("statics/index.html")
+    return FileResponse("static/index.html")
 
 # --- БАЗА ---
 def init_db():
