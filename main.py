@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 import sqlite3
 
 app = FastAPI()
@@ -14,9 +17,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 @app.get("/")
-def home():
-    return FileResponse("static/index.html")
+def site():
+    return FileResponse(os.path.join("static", "index.html"))
 
 
 class TapRequest(BaseModel):
