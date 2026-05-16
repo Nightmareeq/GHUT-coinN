@@ -2,8 +2,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import sqlite3
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 app = FastAPI()
+
+@app.get("/")
+def home():
+    return FileResponse("index.html")
 
 app.add_middleware(
     CORSMiddleware,
