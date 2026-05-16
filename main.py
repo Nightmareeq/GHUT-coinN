@@ -1,22 +1,24 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import sqlite3
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-@app.get("/")
-def home():
-    return FileResponse("index.html")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # можно потом ограничить
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def home():
+    return HTMLResponse("""
+    <h1>Server works</h1>
+    """)
 
 # --- БАЗА ---
 def init_db():
