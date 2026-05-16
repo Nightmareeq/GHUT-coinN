@@ -259,7 +259,9 @@ fetch(API + "/stats/" + USER_ID)
 const btn = document.getElementById("tapBtn");
 
 // ТАП (ОДИН обработчик!)
-btn.addEventListener("click", async (e) => {
+const btn = document.getElementById("tapBtn");
+
+btn.addEventListener("click", async () => {
 
     try {
 
@@ -277,14 +279,13 @@ btn.addEventListener("click", async (e) => {
 
         console.log(data);
 
-    } catch(err) {
+    } catch (err) {
 
         console.error(err);
 
     }
 
 });
-
     // обновление UI
     document.getElementById("players").textContent = data.players;
     document.getElementById("rank").textContent = "#" + data.rank;
