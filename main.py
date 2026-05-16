@@ -8,7 +8,7 @@ import os
 
 app = FastAPI()
 
-app.mount("/statics", StaticFiles(directory="statics"), name="statics")
+app.mount("/statics", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,7 +20,7 @@ app.add_middleware(
 
 @app.get("/")
 def home():
-    path = os.path.join("statics", "index.html")
+    path = os.path.join("static", "index.html")
     return FileResponse(path)
 
 # --- БАЗА ---
