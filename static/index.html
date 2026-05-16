@@ -260,16 +260,30 @@ const btn = document.getElementById("tapBtn");
 
 // ТАП (ОДИН обработчик!)
 btn.addEventListener("click", async (e) => {
-    score++;
 
-    // сервер
-    const res = await fetch(API + "/tap", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ user_id: USER_ID })
-    });
+    try {
 
-    const data = await res.json();
+        const res = await fetch(API + "/tap", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user_id: USER_ID
+            })
+        });
+
+        const data = await res.json();
+
+        console.log(data);
+
+    } catch(err) {
+
+        console.error(err);
+
+    }
+
+});
 
     // обновление UI
     document.getElementById("players").textContent = data.players;
