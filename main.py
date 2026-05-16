@@ -48,10 +48,14 @@ conn.close()
 
 @app.post("/tap")
 def tap(data: TapRequest):
+
     conn = get_connection()
     cur = conn.cursor()
 
-    cur.execute("SELECT id FROM users WHERE id=?", (data.user_id,))
+    cur.execute(
+        "SELECT id FROM users WHERE id=?",
+        (data.user_id,)
+    )
 
     if not cur.fetchone():
         cur.execute(
@@ -75,4 +79,8 @@ def tap(data: TapRequest):
 
     conn.close()
 
-    return {"score": score}
+    return {
+        "score": score,
+        "rank": 1,
+        "players": 1
+    }
